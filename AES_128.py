@@ -15,7 +15,7 @@ def encode_aes_128(block_plain_text, session_key):
     state = shift_rows_1d(state)
     state = XOR(state, lst_round_key[10])
 
-    return bytes(state)  # ✅ Trả về dạng bytes thay vì chuỗi ASCII
+    return bytes(state)  
 
 
 def decode_aes_128(ciphertext, session_key):
@@ -36,4 +36,4 @@ def decode_aes_128(ciphertext, session_key):
     # XOR với round key đầu tiên
     state = XOR(state, lst_round_key[0])
 
-    return bytes(state).decode("ascii")  # ✅ Giữ nguyên bytes trước khi decode
+    return bytes(state)

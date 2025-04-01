@@ -9,17 +9,17 @@ request = b"""GET /dashboard HTTP/1.1\nHost: example.com\nUser-Agent: Mozilla/5.
 start_iv = ''.join(random.choices(string.ascii_letters + string.digits, k=BLOCK_SIZE)).encode('utf-8')
 
 def pad(data:bytes, block_size)->bytes:
-        pad_size = block_size - len(data)%block_size
-        padding = bytes([pad_size]*pad_size)
-        return data + padding
+    pad_size = block_size - len(data)%block_size
+    padding = bytes([pad_size]*pad_size)
+    return data + padding
 
 def to_blocks(data: bytes, block_size: int):
-    data = pad(data, BLOCK_SIZE)
     return [data[i:i + block_size] for i in range(0, len(data), block_size)]
 
 def AES_CBC_encrypt(plain_text: bytes, start_iv: bytes):
     iv = start_iv
-    blocks = to_blocks(plain_text, BLOCK_SIZE)
+    pad_plain_text = pad(plain_text)
+    blocks = to_blocks(pad_plain_text, BLOCK_SIZE)
     cipher_text = []
     for block in blocks:
         cipher_block = encode_aes_128(XOR(iv, block), SESSION_KEY)

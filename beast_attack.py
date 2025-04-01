@@ -27,7 +27,26 @@ class Brower:
         return ciphers
 
 def find_data_len(victim:Brower):
-    return len(victim.data)
+    '''
+    l : kich thuoc cipher ung voi data
+    l = len(data) + padding
+
+    chen du lieu vao cho den khi kich thuoc cipher doi
+    khi do, tuc la padding = 0
+    l = len(data) + n
+    len(data) = l - n
+    '''
+    r1 = victim.send_data_to_server(victim.data)
+    l = len(r1)
+    
+    n = 0
+    while(True):
+        n += 1
+        r2 = victim.send_data_to_server(b'X'*n + victim.data)
+        if(len(r2) != l):
+            break
+    return (l)-n
+            
 
 def attack(victim:Brower)->bytes:
 
@@ -36,7 +55,7 @@ def attack(victim:Brower)->bytes:
 
     # Xac dinh kich thuoc du lieu
     data_len = find_data_len(victim)
-
+    print("Data len = ", data_len)
     # tao 1 request de lay iv
     r = victim.send_data_to_server(b"kjsfhjshfshkdf")
     iv = r[-16:]
@@ -107,8 +126,8 @@ def attack(victim:Brower)->bytes:
     return known_data
 
 if __name__ == "__main__":
-    # victim = Brower(b"this data is secret hacker can not see")
-    victim = Brower(request)
+    victim = Brower(b"this data is secret hacker can not see(~ maybe not)123409876gf")
+    # victim = Brower(request)
     result = attack(victim)
     print("Attack result: {}".format(result))
 
